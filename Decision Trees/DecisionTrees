@@ -1,0 +1,203 @@
+Decision Trees
+
+What is a decision tree?
+-A machine learning model
+
+eg)
+Sample      Sunny?      >90     Outside?
+1           Y           Y       N
+2           Y           N       Y
+3           N           Y       N
+4           N           N       N
+5           N           Y       ?
+
+-4 days of samples and we want to be able to make a prediction on the fifth day.
+
+Features -> Sunny, 90
+Decision -> Outside
+
+- No or Yes result -> Binary Problem
+- So we have binary features and a binary outcome
+
+Start by building a tree:
+-Start at root and branch
+
+        Sunny
+N                   Y
+S3                   S1
+S4                   S2
+
+-What if we stopped here? How would we do on training data?
+2/2 N               1/2 Y         ->    75%
+
+-But we can also say N on the right side (or if we just say No all the time) we get 75%
+
+        Sunny
+N                   Y
+S3                   S1
+S4                   S2
+
+2/2                 >90?
+
+            N                   Y
+            S2                   S1
+
+How do we do now?
+            1/1                 1/1         -> 100%
+
+-So we save this tree model and on day five and ask if it is Sunny or >90 and make a prediction about whether to go
+outside of whether not to go outside.
+    -So when we reach day 5 if Sunny? == No. We will branch left and predict No
+
+
+How well could we predict whether or not we should go outside?
+
+        >90?
+N               Y
+S2 -> Y         S1 -> N
+S4 -> N         S3 -> N
+
+-We get 75% again.
+
+        >90?
+N               Y
+S2 -> Y         S1 -> N
+S4 -> N         S3 -> N
+                2/2
+    Sunny
+N           Y
+S4          S2
+1/1         1/1         -> 100%
+
+
+-We don't have the samples we just save the tree and make predictions based on tree decisions at test time.
+
+-In this training set we have every possible combination of features
+    - Y/N, N/Y, Y/Y, N/N
+    -no contradictory labels
+    -if we have contradictory labels, it would be impossible to score perfect at testing time.
+
+-How do we choose which feature to split on?
+    -greedy algorithm -> Entropy & Information Gain
+
+    -Entropy (in machine learning) -> Surprise (more information, more surprise)
+
+        H() = ∑_c∈C -p(c) log2p(c) -> sum of the probability of each class multiplied by the log of the probability of the class
+
+        H() = entropy of whole set
+        c = class
+        C = set of classes
+        p = number of times class occurs divided by the number of classes in set
+
+        C = {N,Y} -> classes equal No,Yes (labels)
+
+        -all this is is the sum of the negative probability of No times the log of the probability of No plus
+        the sum of the negative probability of Yes times the log of the probability of Yes
+
+        -log2(x)-> 2^y  = x
+            eg) log2(4) -> 2^y = 4 -> y = 2
+
+
+   eg)
+
+   Sample   Output
+   1        Y
+   2        Y
+   3        N
+   4        N
+
+   H() = (-1/2) * (log2(1/2)) - (-1/2) * (log2(1/2))
+
+   H() = -log2(1/2) = 1
+
+
+   eg2)
+
+   Sample   Output
+   1        Y
+   2        Y
+   3        Y
+   4        N
+
+   H() = (-(1/4) * (log2(1/4)))- (-(3/4) * (log2(3/4)))
+
+   H() = 0.5 + 0.31127 = 0.81127 (more exciting than if everything is the same)
+
+-Information Gain (used to make splits with decision tree)
+    IG = H() - ∑_t∈T -p(t)H(t) -> the entropy of the full set minus the probability that I ended up on a particular side of a split times the entropy of that split
+
+eg)
+Sample      Sunny?      >90     Outside?
+1           Y           Y       N
+2           Y           N       Y
+3           N           Y       N
+4           N           N       N
+5           N           Y       ?
+
+        Sunny
+N                   Y
+S3 -> N                  S1 -> N
+S4 -> N                  S2 -> Y
+
+First, we need to calculate the entropy of the whole set:
+
+H() = -p(N) log2p(N) - p(Y) log2p(Y) = -(3/4) * log2p(3/4) - (1/4) * log2p(1/4) = 0.311 + 0.5 = 0.811
+
+Now, we split on sunny, so now we have two subsets.
+We want to see if we gained any information by split in this way,
+so we need to take entropy of the left side and then the right side
+
+H(Sunny? = N) = 0 + 0 = 0
+H(Sunny? = Y) = 0.5 + 0.5 = 1 (we gained)
+
+Now that we have entropy of both sides on sunny, we can calculate IG:
+
+IG = H() - ((1/2)*H(Sunny? = N) + (1/2) * H(Sunny? = Y) = 0.811 - (0 + (1/2) = 0.311
+
+We want both sides of the split to have an entropy of zero.
+If both sides of the split = 0, then our information gain will be high.
+
+-Greedy Algorithm (how do we apply entropy and IG to build tree)
+1)Calculate entropy (H) for the entire training set
+2) Split training data using each feature and calculate Information Gain (IG) for each split
+3) Choose to split on the feature that gives the best IG
+4) Repeat steps 2-4 on each subset until IG is zero or we run out of features
+
+-recursive process
+
+eg) Tv Shows
+
+Sample #    Show        <40min?     Comedy?     Female Lead?    Political   Like?
+1           The Office      Y           Y           N               N       N
+2           Veep            Y           Y           Y               Y       Y*
+3           Parks&Rec       Y           Y           Y               Y       Y*
+4           House of Cards  N           N           N               Y       N
+5           Scandal         N           N           Y               Y       N
+6           OINB            N           N           Y               N       Y*
+7           Riverdale       N           N           N               N       N
+8           Glow            Y           N           Y               N       N
+9           UKS             Y           Y           Y               N       Y*
+10          The Crown       N           N           Y               Y       N
+
+Let's build a decision tree that will predict whether I like new shows
+
+1) Calculate Entropy of the entire data set
+    -calculate entropy for Y Like? (4) and N Like? (6)
+    H() = -(6/10)*log2(6/10) - 4/10 * log2(4/10) = 0.9709
+
+
+2) Split training dta using each feature and calculate information gain for each split.
+    <40min?
+N           Y
+S4          S1
+S5          S2
+S6 -> Y     S3
+S7          S8
+S10         S9
+
+If we look at the samples labeled N only one is labeled Like? Y:
+
+H(<40min? = N) = -(1/5)*log2(1/5)-(4/5)log2(4/5) = 0.7219
+H(<40min? = Y) = -(2/5)*log2(2/5)-(3/5)log2(3/5) = 0.9709
+
+IG = 0.9709 - ((5/10) * 0.7219 + (5/10) * 0.9709) = 0.1245
