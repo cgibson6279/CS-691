@@ -51,7 +51,6 @@ def entropy(X : Callable[[np.ndarray], int], row_num: int) -> Tuple[float,float,
     no = 0
 
     for feature in X[:, row_num]:
-        print(feature)
         if feature == 1:
             yes += 1
         else:
