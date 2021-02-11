@@ -39,6 +39,7 @@ def main():
     set_entrop = Y_H
 
     for i in range(len(X)):
+        pass
 
 
 
