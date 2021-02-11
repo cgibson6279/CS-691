@@ -4,10 +4,6 @@ from typing import List, Callable, Tuple
 
 def log2(x : int) -> float:
     '''
-    log2(x)-> 2^n  = x
-    log2(134) ->
-
-    log_10(100) = 2 is equivalent to 10**2 = 100
     :param n:
         the number we are applying our log_2 function to
     :return:
@@ -20,6 +16,15 @@ def log2(x : int) -> float:
     return log_num
 
 def probability(count : int, set_length : int) -> float:
+    '''
+
+    :param count:
+        the count of feature tokens present in set
+    :param set_length:
+        length of set feature class being observed
+    :return:
+        probability of feature token observation in class set
+    '''
     return round(count/set_length,2)
 
 def entropy(X : Callable[[np.ndarray], int], row_num: int) -> Tuple[float,float,float,float,float]:
@@ -33,14 +38,19 @@ def entropy(X : Callable[[np.ndarray], int], row_num: int) -> Tuple[float,float,
     :param y:
         a np.array of label inputs for feature input row
     :return:
-        the entropy of a given set in the form of a float value
+        no_entropy, yes_entropy, p_yes, p_no, H
 
+        no_entropy -> entropy of no branch
+        yes_entropy -> entropy of yes branch
+        p_yes -> probability of yes
+        p_no -> probability of no
+        H -> entropy of a class set in the form of a float value
     '''
 
+    # get feature (yes, no) counts
     yes = 0
     no = 0
 
-    #get feature (yes, no) counts
     for feature in X[:, row_num]:
         print(feature)
         if feature == 1:
@@ -53,10 +63,10 @@ def entropy(X : Callable[[np.ndarray], int], row_num: int) -> Tuple[float,float,
     p_no = probability(no, len(X))
 
     #calculate entropy -> H() = ∑_c∈C -p(c) log2p(c)
-    no_entropy = (-(p_no) * log2(p_no)) #entropy of no
-    yes_entropy = (-(p_yes) * log2(p_yes)) #entropy of yes
+    no_entropy = (-(p_no) * log2(p_no))
+    yes_entropy = (-(p_yes) * log2(p_yes))
 
-    H = round(no_entropy + yes_entropy,4) #entropy of entire set
+    H = round(no_entropy + yes_entropy,4)
 
     return no_entropy, yes_entropy, p_yes, p_no, H
 
@@ -67,9 +77,11 @@ def info_gain(X : Callable[[np.ndarray], float], Y : Callable[[np.ndarray], floa
     up on a particular side of a split times the entropy of that split
 
     :param x:
+        an np.array of feature inputs, where each row corresponding to a single sample
     :param y:
+    an np.array of label inputs, where each row corresponding to a single sample
     :return:
-        information gain value
+        information gain value as a float value
     '''
 
     #get entropy of entire set
@@ -95,12 +107,17 @@ def info_gain(X : Callable[[np.ndarray], float], Y : Callable[[np.ndarray], floa
 
 
 '''
+Test Data 
+
 Sample      Sunny?      >90     Outside?
 1           Y           Y       N
 2           Y           N       Y
 3           N           Y       N
 4           N           N       N
 5           N           Y       ?
+
+IG = H() - ((1/2)*H(Sunny? = N) + (1/2) * H(Sunny? = Y) = 0.811 - (0 + (1/2) = 0.311
+
 '''
 X_test = np.array([[1,1],[1,0],[0,1],[0,0]])
 Y_test = np.array([[0],[1],[0],[0]])
