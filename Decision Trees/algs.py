@@ -17,7 +17,6 @@ def log2(x : int) -> float:
 
 def probability(count : int, set_length : int) -> float:
     '''
-
     :param count:
         the count of feature tokens present in set
     :param set_length:
@@ -89,21 +88,13 @@ def info_gain(X : Callable[[np.ndarray], float], Y : Callable[[np.ndarray], floa
     y_no_entropy, y_yes_entro, y_yes, y_no, y_entropy = entropy(Y,0)
 
     #get entropy of each split
-    #x_no_entro -> entropy for no side of split
-    #x_yes_entro -> entropy for yes side of split
-    #x_yes -> yes probability
-    #x_no -> no probability
-    #x_entropy -> entropy of set
     x_no_entro, x_yes_entro, x_yes, x_no, x_entropy = entropy(X, row_num)
 
-    #get info gain ->
+    #get info gain -> IG = H() - ∑_t∈T -p(t)H(t)
 
     IG = y_entropy - ((x_no * x_no_entro) + (x_yes * x_yes_entro))
-    #print(f'y_entropy: {y_entropy}\nx_no: {x_no}\nx_no_entro: {x_no_entro}\nx_yes: {x_yes}\nx_yes_entro: {x_yes_entro}')
+
     return IG
-
-    #H = ((-(p_no) * log2(p_no)) + (-(p_yes) * log2(p_yes)))
-
 
 
 '''
