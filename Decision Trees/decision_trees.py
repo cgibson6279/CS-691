@@ -24,3 +24,24 @@ Sample #    Show        <40min?     Comedy?     Female Lead?    Political   Like
 Let's build a decision tree that will predict whether I like new shows
 
 '''
+
+import algs
+import numpy as np
+from typing import Callable
+
+Y = np.array([[0],[1],[1],[0],[0],[1],[0],[0],[1],[0]])
+
+def DT_train_binary(X : Callable[[np.ndarray], int], Y : Callable[[np.ndarray], int], max_depth : int) ->
+def main():
+
+    Y_no_entropy, Y_yes_entropy, Y_p_yes, Y_p_no, Y_H = algs.entropy(Y,0)
+
+    set_entrop = Y_H
+
+    for i in range(len(X)):
+
+
+
+
+if __name__== "__main__":
+    main()

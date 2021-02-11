@@ -201,3 +201,67 @@ H(<40min? = N) = -(1/5)*log2(1/5)-(4/5)log2(4/5) = 0.7219
 H(<40min? = Y) = -(2/5)*log2(2/5)-(3/5)log2(3/5) = 0.9709
 
 IG = 0.9709 - ((5/10) * 0.7219 + (5/10) * 0.9709) = 0.1245
+
+    Comedy?
+N           Y
+S4          S1
+S5          S2
+S6          S3
+S7          S9
+S8
+S10
+
+H(Comedy? = N) = -(5/6)*log2(5/6)-(1/6)log2(1/6) = 0.6500
+H(Comedy? = Y) = -(1/4)*log2(1/4)-(3/6)log2(3/6) = 0.8112
+
+IG = 0.9709 - ((6/10) * 0.6500 + (4/10) * 0.8112) = 0.2564
+
+    Female Lead?
+N           Y
+S1          S2
+S4          S3
+S7          S5
+            S6
+            S8
+            S9
+            S10
+
+H(Female Lead? = N) = -(3/3)*log2(3/3)-(0/6)log2(0/6) = 0.0
+H(Female Lead? = Y) = -(3/7)*log2(3/7)-(4/7)log2(4/7) = 0.98
+
+IG = 0.9709 - ((3/10) * 0 + (7/10) * 0.9852) = 0.2812
+
+     Political?
+N           Y
+S1          S2
+S6          S3
+S7          S4
+S8          S5
+S9          S10
+
+H(Political? = N) = -(3/5)*log2(3/5)-(2/5)log2(2/5) = 0.9709
+H(Political? = Y) = -(3/5)*log2(3/5)-(2/5)log2(2/5) = 0.9709
+
+IG = 0.9709 - ((5/10) * 0.9709 + (5/10) * 0.9709) = 0
+
+3) Choose best feature to split on (max information gain).
+<40Min? IG = 0.1245
+Comedy? IG = 0.2564
+Female Lead? IG = 0.2812*
+Political? IG = 0
+
+4) Repeat steps 2-4 on each subset until best IG is Zero.
+
+When we go back through to we no longer care about entropy of entire set anymore,
+so we use entropy of feature split that give max entropy value (in our case Female Lead? = Y).
+
+so now we begin to branch
+
+            Female Lead?
+N                               Y
+No                          <40mins?
+                        N               Y
+
+Now we calculate entropy of Female Lead against 40 mins
+H(Female Lead? = Y, <40min = No) = -(2/3)log2(2/3) - (1/3)log2(1/3) = 0.9182
+

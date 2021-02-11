@@ -109,10 +109,10 @@ Sample      Sunny?      >90     Outside?
 IG = H() - ((1/2)*H(Sunny? = N) + (1/2) * H(Sunny? = Y) = 0.811 - (0 + (1/2) = 0.311
 
 '''
-X_test = np.array([[1,1],[1,0],[0,1],[0,0]])
-Y_test = np.array([[0],[1],[0],[0]])
+#X_test = np.array([[1,1],[1,0],[0,1],[0,0]])
+#Y_test = np.array([[0],[1],[0],[0]])
 
-print(info_gain(X_test,Y_test,0))
+#print(info_gain(X_test,Y_test,0))
 #print(entropy(Y_test,0))
 
 #X = np.array([[0,1,0,1],[1,1,1,1],[0,0,0,1]])
