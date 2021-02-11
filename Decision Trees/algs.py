@@ -1,5 +1,5 @@
 import numpy as np
-import math
+
 from typing import List, Callable, Tuple
 
 def log2(x : int) -> float:
@@ -10,7 +10,7 @@ def log2(x : int) -> float:
         the log_2 of number
     '''
     try:
-        log_num = round(math.log2(x),4)
+        log_num = round(np.log2(x),4)
     except ValueError as error:
         log_num = 0
     return log_num
@@ -91,7 +91,7 @@ def info_gain(X : Callable[[np.ndarray], float], Y : Callable[[np.ndarray], floa
 
     #get info gain -> IG = H() - ∑_t∈T -p(t)H(t)
 
-    IG = y_entropy - ((x_no * x_no_entro) + (x_yes * x_yes_entro))
+    IG = round(y_entropy - ((x_no * x_no_entro) + (x_yes * x_yes_entro)),4)
 
     return IG
 
