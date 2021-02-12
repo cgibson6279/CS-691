@@ -101,30 +101,30 @@ def info_gain(X : Callable[[np.ndarray], float], Y : Callable[[np.ndarray], floa
     '''
 
     #get entropy of entire set
-    no_prob, no = split_entropy(Y, 0, 0)
-    yes_prob, yes = split_entropy(Y, 0, 1)
+    no_prob, no = split_entropy(Y, row_num, 0)
+    yes_prob, yes = split_entropy(Y, row_num, 1)
 
     H_set = set_entropy(no, yes)
 
     #get probability of feature across dataset
-    f_no_prob, f_no_X = split_entropy(X, 0, 0)
-    f_yes_prob, f_yes_X = split_entropy(X, 0, 1)
+    f_no_prob, f_no_X = split_entropy(X, row_num, 0)
+    f_yes_prob, f_yes_X = split_entropy(X, row_num, 1)
 
     #get no subset of feature
-    f_no, f_no_labels = subset_array(X, Y, 0, 0)
+    f_no, f_no_labels = subset_array(X, Y, row_num, 0)
     #get yes subset of feature
-    f_yes, f_yes_labels = subset_array(X, Y, 0, 1)
+    f_yes, f_yes_labels = subset_array(X, Y, row_num, 1)
 
 
     #get no subset split entropy
-    f1_no_entropy_prob, f1_no_entropy = split_entropy(f_no_labels, 0, 0)
-    f1_yes_entropy_prob, f1_yes_entropy = split_entropy(f_no_labels, 0, 1)
+    f1_no_entropy_prob, f1_no_entropy = split_entropy(f_no_labels, row_num, 0)
+    f1_yes_entropy_prob, f1_yes_entropy = split_entropy(f_no_labels, row_num, 1)
 
     H_no = set_entropy(f1_no_entropy, f1_yes_entropy)
 
     #get yes subset split entropy
-    f_y_entropy_prob, f_y_entropy = split_entropy(f_yes_labels, 0, 1)
-    f_n_entropy_prob, f_n_entropy = split_entropy(f_yes_labels, 0, 0)
+    f_y_entropy_prob, f_y_entropy = split_entropy(f_yes_labels, row_num, 1)
+    f_n_entropy_prob, f_n_entropy = split_entropy(f_yes_labels, row_num, 0)
 
     H_yes = set_entropy(f_y_entropy, f_n_entropy)
 
