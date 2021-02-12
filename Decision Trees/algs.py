@@ -10,8 +10,8 @@ def log2(x : int) -> float:
         the log_2 of number
     '''
     try:
-        log_num = round(math.log2(x),4)
-    except:
+        log_num = round(np.log2(x),4)
+    except RuntimeWarning as error:
         log_num = 0
     return log_num
 
@@ -26,7 +26,7 @@ def probability(count : int, set_length : int) -> float:
     '''
     return round(count/set_length,2)
 
-def entropy(X : Callable[[np.ndarray], int], row_num: int) -> Tuple[float,float,float,float,float]:
+def split_entropy(X : Callable[[np.ndarray], int], row_num: int, feature : int) -> Tuple[float,float,float,float,float]:
     '''
     alg:
         H() = ∑_c∈C -p(c) log2p(c) -> the sum of the negative probability of No times the log of the probability of No plus
@@ -39,35 +39,53 @@ def entropy(X : Callable[[np.ndarray], int], row_num: int) -> Tuple[float,float,
     :return:
         no_entropy, yes_entropy, p_yes, p_no, H
 
-        no_entropy -> entropy of no branch
-        yes_entropy -> entropy of yes branch
-        p_yes -> probability of yes
-        p_no -> probability of no
-        H -> entropy of a class set in the form of a float value
     '''
 
     # get feature (yes, no) counts
-    yes = 0
-    no = 0
+    feature_count = 0
 
-    for feature in X[:, row_num]:
-        if feature == 1:
-            yes += 1
-        else:
-            no += 1
+    for f in X[:, row_num]:
+        if f == feature:
+            feature_count += 1
 
     #find probability
-    p_yes = probability(yes, len(X))
-    p_no = probability(no, len(X))
+    prob = probability(feature_count, len(X))
 
     #calculate entropy -> H() = ∑_c∈C -p(c) log2p(c)
-    no_entropy = (-(p_no) * log2(p_no))
-    yes_entropy = (-(p_yes) * log2(p_yes))
+    entropy = (-(prob) * log2(prob))
 
-    H = round(no_entropy + yes_entropy,4)
+    return prob, entropy
 
-    return no_entropy, yes_entropy, p_yes, p_no, H
+def set_entropy(no_entropy :float, yes_entropy: float):
+    # calculate entropy -> H() = ∑_c∈C -p(c) log2p(c)
+    return no_entropy + yes_entropy
 
+def subset_array(X : Callable[[np.ndarray], float], Y : Callable[[np.ndarray], float], index : int, feature : int) -> Callable[[np.ndarray], float]:
+    '''
+
+    :param array:
+        np.array
+    :param index:
+        column index to create subset array
+    :param feature:
+        feature 1 or 0 that were looking for
+    :return:
+        np.array that contains the subset of the feature being observed
+    '''
+    feature_index = np.where(X[:, index] == feature)
+
+    X_sub = []
+    Y_sub = []
+
+    for array in feature_index:
+        for feature in array:
+            X_sub.append(X[feature])
+            Y_sub.append(Y[feature])
+
+    X_sub = np.array(X_sub)
+    Y_sub = np.array(Y_sub)
+
+    return X_sub, Y_sub
 
 def info_gain(X : Callable[[np.ndarray], float], Y : Callable[[np.ndarray], float], row_num: int) -> float:
     '''
@@ -83,16 +101,64 @@ def info_gain(X : Callable[[np.ndarray], float], Y : Callable[[np.ndarray], floa
     '''
 
     #get entropy of entire set
-    #y_entropy -> total entropy of set
-    y_no_entropy, y_yes_entro, y_yes, y_no, y_entropy = entropy(Y,0)
+    no_prob, no = split_entropy(Y, 0, 0)
+    yes_prob, yes = split_entropy(Y, 0, 1)
 
-    #get entropy of each split
-    x_no_entro, x_yes_entro, x_yes, x_no, x_entropy = entropy(X, row_num)
+    H_set = set_entropy(no, yes)
+
+    #get probability of feature across dataset
+    f_no_prob, f_no_X = split_entropy(X, 0, 0)
+    f_yes_prob, f_yes_X = split_entropy(X, 0, 1)
+
+    #get no subset of feature
+    f_no, f_no_labels = subset_array(X, Y, 0, 0)
+    #get yes subset of feature
+    f_yes, f_yes_labels = subset_array(X, Y, 0, 1)
+
+
+    #get no subset split entropy
+    f1_no_entropy_prob, f1_no_entropy = split_entropy(f_no_labels, 0, 0)
+    f1_yes_entropy_prob, f1_yes_entropy = split_entropy(f_no_labels, 0, 1)
+
+    H_no = set_entropy(f1_no_entropy, f1_yes_entropy)
+
+    #get yes subset split entropy
+    f_y_entropy_prob, f_y_entropy = split_entropy(f_yes_labels, 0, 1)
+    f_n_entropy_prob, f_n_entropy = split_entropy(f_yes_labels, 0, 0)
+
+    H_yes = set_entropy(f_y_entropy, f_n_entropy)
 
     #get info gain -> IG = H() - ∑_t∈T -p(t)H(t)
 
-    IG = round(y_entropy - ((x_no * x_no_entro) + (x_yes * x_yes_entro)),4)
-
+    IG = round(H_set - ((f_no_prob * H_no) + (f_yes_prob * H_yes)),4)
+    print(f'{H_set} - (({f_no_prob} * {H_no}) + ({f_yes_prob} * {H_yes})) = {IG}')
     return IG
 
+X = np.array([[1, 1, 0, 0],
+              [1, 1, 1, 1],
+              [1, 1, 1, 1],
+              [0, 0, 0, 1],
+             [0, 0, 1, 1],
+             [0, 0, 1, 0],
+             [0, 0, 0, 0],
+             [1, 0, 1, 0],
+             [1, 1, 1, 0],
+             [0, 0, 1, 1]])
 
+Y = np.array([[0],[1],[1],[0],[0],[1],[0],[0],[1],[0]])
+
+
+#print(f1_yes_entropy)
+#print(f1_no_entropy)
+
+#print(set_entropy(f1_yes_entropy, f1_no_entropy))
+#print(info_gain(X,Y,0))
+
+#H(<40min? = N) = -(1/5)*log2(1/5)-(4/5)log2(4/5) = 0.7219
+#H(<40min? = Y) = -(2/5)*log2(2/5)-(3/5)log2(3/5) = 0.9709
+
+#IG = 0.9709 - ((5/10) * 0.7219 + (5/10) * 0.9709) = 0.1245
+
+print(info_gain(X,Y,0))
+#print(X_yes_set)
+#print(len(X_yes_set))
