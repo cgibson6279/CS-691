@@ -27,12 +27,12 @@ Let's build a decision tree that will predict whether I like new shows
 
 import algs
 import numpy as np
-from typing import Callable
+from typing import Callable, Dict, List
 
 X = np.array([[1,1,1,0,0,0,0,1,1,0],[1,1,1,0,0,0,0,0,1,0],[0,1,1,0,1,1,0,1,1,1],[0,1,1,1,1,0,0,0,0,1]])
 Y = np.array([[0],[1],[1],[0],[0],[1],[0],[0],[1],[0]])
 
-def DT_train_binary(X : Callable[[np.ndarray], int], Y : Callable[[np.ndarray], int], max_depth : int) ->:
+def DT_train_binary(X : Callable[[np.ndarray], int], Y : Callable[[np.ndarray], int], max_depth : int) -> Dict[str,List]:
     pass
 
 def main():
@@ -46,7 +46,10 @@ def main():
     decision_tree = dict()
 
     for i in range(len(X)):
-        pass
+        X_no_entropy, X_yes_entropy, X_p_yes, X_p_no, X_H = algs.entropy(X, 1)
+        decision_tree[f'Sample {i + 1}'] = [X_no_entropy, X_yes_entropy, X_H]
+
+    print(decision_tree)
 
 
 

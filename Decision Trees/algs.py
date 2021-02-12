@@ -1,5 +1,5 @@
 import numpy as np
-
+import math
 from typing import List, Callable, Tuple
 
 def log2(x : int) -> float:
@@ -10,8 +10,8 @@ def log2(x : int) -> float:
         the log_2 of number
     '''
     try:
-        log_num = round(np.log2(x),4)
-    except ValueError as error:
+        log_num = round(math.log2(x),4)
+    except:
         log_num = 0
     return log_num
 
