@@ -29,14 +29,21 @@ import algs
 import numpy as np
 from typing import Callable
 
+X = np.array([[1,1,1,0,0,0,0,1,1,0],[1,1,1,0,0,0,0,0,1,0],[0,1,1,0,1,1,0,1,1,1],[0,1,1,1,1,0,0,0,0,1]])
 Y = np.array([[0],[1],[1],[0],[0],[1],[0],[0],[1],[0]])
 
-def DT_train_binary(X : Callable[[np.ndarray], int], Y : Callable[[np.ndarray], int], max_depth : int) ->
+def DT_train_binary(X : Callable[[np.ndarray], int], Y : Callable[[np.ndarray], int], max_depth : int) ->:
+    pass
+
 def main():
 
     Y_no_entropy, Y_yes_entropy, Y_p_yes, Y_p_no, Y_H = algs.entropy(Y,0)
 
     set_entrop = Y_H
+
+    #create decision tree
+
+    decision_tree = dict()
 
     for i in range(len(X)):
         pass

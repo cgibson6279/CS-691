@@ -96,24 +96,3 @@ def info_gain(X : Callable[[np.ndarray], float], Y : Callable[[np.ndarray], floa
     return IG
 
 
-'''
-Test Data 
-
-Sample      Sunny?      >90     Outside?
-1           Y           Y       N
-2           Y           N       Y
-3           N           Y       N
-4           N           N       N
-5           N           Y       ?
-
-IG = H() - ((1/2)*H(Sunny? = N) + (1/2) * H(Sunny? = Y) = 0.811 - (0 + (1/2) = 0.311
-
-'''
-#X_test = np.array([[1,1],[1,0],[0,1],[0,0]])
-#Y_test = np.array([[0],[1],[0],[0]])
-
-#print(info_gain(X_test,Y_test,0))
-#print(entropy(Y_test,0))
-
-#X = np.array([[0,1,0,1],[1,1,1,1],[0,0,0,1]])
-#Y = np.array([[1],[1],[0]])
